@@ -1,0 +1,230 @@
+<!DOCTYPE html> 
+
+<html>
+
+<head>
+
+<style>
+</style>
+
+<title>Human GRCh37 :: Dalliance</title> 
+
+<script language="javascript" src="ode_modules/dalliance/node_modules/es6-promise/dist/promise-0.1.1.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/bam.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/bigwig.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/das.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/spans.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/utils.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/cbrowser.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/feature-popup.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/tier.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/features.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/color.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/feature-draw.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/sequence-draw.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/domui.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/track-adder.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/chainset.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/version.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/sha1.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/sample.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/kspace.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/bin.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/twoBit.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/thub.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/svg-export.js"></script>
+<script language="javascript" src="node_modules/dalliance/node_modules/jszlib/js/inflate.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/browser-ui.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/glyphs.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/session.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/jbjson.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/sourceadapters.js"></script>
+<script language="javascript" src="node_modules/dalliance/polyfills/html5slider.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/ensembljson.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/overlay.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/tier-actions.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/tier-edit.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/search.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/tabix.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/tabix-source.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/bigtab.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/memstore.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/vcf.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/bedwig.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/probe.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/trix.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/export-ui.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/export-config.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/export-image.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/svg-utils.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/numformats.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/cigar.js"></script>
+<script language="javascript" src="node_modules/dalliance/js/lh3utils.js"></script>
+
+<script language="javascript" src="comparative.js"></script>
+
+<script language="javascript">
+
+   var mouse =   new Browser({
+      chr:        '5',
+      viewStart:  150492648,
+      viewEnd:    150626627,
+      cookieKey:  'mouse38',
+      pageName: 'mouseHolder',
+
+      coordSystem: {
+          speciesName: 'Mouse',
+          taxon: 10090,
+          auth: 'GRCm',
+          version: 38,
+          ucscName: 'mm10'
+      },
+
+
+    chains: {
+      mm9ToMm10: new Chainset('http://www.derkholm.net:8080/das/mm9ToMm10/', 'NCBIM37', 'GRCm38',
+                               {
+                                  speciesName: 'Mouse',
+                                  taxon: 10090,
+                                  auth: 'NCBIM',
+                                  version: 37,
+                                  ucscName: 'mm9'
+                               }),
+       hg19ToMm10: {
+              coords: {
+                speciesName: 'Human',
+                taxon: 9606,
+                auth: 'GRCh',
+                version: '37',
+                ucscName: 'hg19',
+              },
+              uri: 'http://www.biodalliance.org/datasets/hg19ToMm10.bb',
+              type: 'bigbed'
+       }
+    }, 
+
+
+      sources:      [{name: 'Genome',
+                     twoBitURI:  'http://www.biodalliance.org/datasets/GRCm38/mm10.2bit',
+                     desc: 'Mouse reference genome build GRCm38',
+                     tier_type: 'sequence',
+                     provides_entrypoints: true}
+                      ,{name: 'Genes',
+                        desc: 'Gene structures from GENCODE M2',
+                        bwgURI: 'http://www.biodalliance.org/datasets/GRCm38/gencodeM2.bb',
+                        stylesheet_uri: 'http://www.biodalliance.org/stylesheets/gencode.xml',
+                        collapseSuperGroups: true,
+                        trixURI: 'http://www.biodalliance.org/datasets/GRCm38/gencodeM2.ix'}
+                      ,{name: 'Repeats',
+                        desc: 'Repeat annotation from UCSC', 
+                        bwgURI: 'http://www.biodalliance.org/datasets/GRCm38/repeats.bb',
+                        stylesheet_uri: 'http://www.biodalliance.org/stylesheets/bb-repeats2.xml'}],
+        uiPrefix: 'http://www.biodalliance.org/dev/',
+        disablePoweredBy: false,
+        toolbarBelow: true,                       
+});
+
+  var human = new Browser({
+    chr:          '13',
+    viewStart:    32864490,
+    viewEnd:      32998468,
+    cookieKey:    'human-grc_h37-offline4',
+    pageName: 'humanHolder',
+
+    coordSystem: {
+      speciesName: 'Human',
+      taxon: 9606,
+      auth: 'GRCh',
+      version: '37',
+      ucscName: 'hg19',
+    },
+
+    chains: {
+       mm10ToHg19: {
+              coords:  {
+                                  speciesName: 'Mouse',
+                                  taxon: 10090,
+                                  auth: 'GRCm',
+                                  version: 38
+              },
+              uri: 'http://www.biodalliance.org/datasets/mm10ToHg19.bb',
+              type: 'bigbed'
+       }
+    },
+
+    sources:     [{name:                 'Genome',
+                   desc: 'Human reference genome build GRCh37',
+                   twoBitURI:            'http://www.biodalliance.org/datasets/hg19.2bit',
+                   provides_entrypoints: true,
+                   disabled: false,
+                   pinned: true
+                  },
+
+                  {name: 'GENCODE',
+                        bwgURI: 'http://www.biodalliance.org/datasets/gencode.bb',
+                        stylesheet_uri: 'http://www.biodalliance.org/stylesheets/gencode.xml',
+                        collapseSuperGroups: true,
+                        trixURI: 'http://www.biodalliance.org/datasets/geneIndex.ix'},
+
+                       {name: 'Repeats',
+                        desc: 'Repeat annotation from Ensembl 59', 
+                        bwgURI: 'http://www.biodalliance.org/datasets/repeats.bb',
+                        stylesheet_uri: 'http://www.biodalliance.org/stylesheets/bb-repeats.xml'}
+
+
+                 
+                  ,{    name: 'GWAS Catalog',
+                desc: 'NHGRI GWAS Catalog',
+                style: [{type: 'default', style: {glyph: 'PLIMSOLL', HEIGHT: '12', STROKECOLOR: 'black', FGCOLOR: 'red'}}],
+                forceReduction: -1,
+                bwgURI: 'http://ngs.sanger.ac.uk/production/uk10k/dalliance/gwascatalog.bb'
+                 }],
+
+    setDocumentTitle: true,
+    uiPrefix: 'http://www.biodalliance.org/dev/',
+    fullScreen: true,
+    maxWorkers: 0,
+
+    maxViewWidth: 1000000,
+
+    noRegistryTabs: true,
+
+    defaultHighlightFill: 'yellow',
+    defaultHighlightAlpha: 0.15,
+
+    toolbarBelow: false,
+    disablePoweredBy: true,
+
+    browserLinks: {
+        Ensembl: 'http://ncbi36.ensembl.org/Homo_sapiens/Location/View?r=${chr}:${start}-${end}',
+        UCSC: 'http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chr${chr}:${start}-${end}',
+        Sequence: 'http://www.derkholm.net:8080/das/hg19comp/sequence?segment=${chr}:${start},${end}'
+    }
+  });
+  
+
+
+
+human.addInitListener(function() {
+  var compcan = document.getElementById('comparison');
+  human.addViewListener(function() {
+    refreshComparative(compcan, human, 'mm10ToHg19', mouse, 'hg19ToMm10');
+  });
+  mouse.addViewListener(function() {
+    refreshComparative(compcan, human, 'mm10ToHg19', mouse, 'hg19ToMm10');
+  });
+  compcan.addEventListener('click', function(ev) {
+    syncComparative(human, mouse, 'mm10ToHg19');
+  }, false);
+});
+</script>
+</head>
+
+<body>
+<a href='http://www.ensembl.org/' id='enslink' target='_newtab' style='display: none'>Link to Ensembl</a>
+<div id='humanHolder'>Dalliance here...</div>
+<canvas id='comparison' width='800' height='200'></canvas>
+<div id='mouseHolder'>Dalliance genome browser goes here.  Unless you have an ancient web browser or something.</div>
+</body>
+</html>
+
