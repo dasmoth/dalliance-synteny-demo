@@ -46,73 +46,54 @@ function refreshComparative(canvas, topd, topMappingName, bottomd, bottomMapping
       .then(function(mbsl) {
         console.log(mbsl);
 
-        canvas.width = human.tierHolder.offsetWidth;
+        var w = human.tierHolder.offsetWidth;
+        if (window.devicePixelRatio > 1) {
+            canvas.width = w * 2;
+            canvas.height = 400;
+        } else {
+            canvas.width = w;
+            canvas.height = 200;
+        }
+        canvas.style.width = '' + w + 'px';
+        canvas.style.height = '200px';
 
         var g = canvas.getContext('2d');
+        if (window.devicePixelRatio > 1)
+            g.scale(2, 2);
+
         g.fillStyle = 'red';
         g.globalAlpha = 0.5;
 
         var covered = {};
-        {
-            var mbs = mbsl[0];
-            
+        var mbs = mbsl[0].concat(mbsl[1]);
+        
+        for (var mbi = 0; mbi < mbs.length; ++mbi) {
+            var mb = mbs[mbi];
+            var ck = '' + mb.destMin + '_' + mb.destMax;
+            if (covered[ck])
+                continue;
 
-            for (var mbi = 0; mbi < mbs.length; ++mbi) {
-                var mb = mbs[mbi];
-                covered['' + mb.destMin + '_' + mb.destMax] = true;
+            covered[ck] = true;
 
-                var tstart = (mb.destMin - topd.viewStart) * topd.scale;
-                var tend = (mb.destMax -topd.viewStart) * topd.scale;
+            var tstart = (mb.destMin - topd.viewStart) * topd.scale;
+            var tend = (mb.destMax -topd.viewStart) * topd.scale;
 
-                if (mb.srcChr == bottomd.chr) {
-                    var bstart = (mb.srcMin - bottomd.viewStart) * bottomd.scale;
-                    var bend = (mb.srcMax - bottomd.viewStart) * bottomd.scale;
+            if (mb.srcChr == bottomd.chr && mb.destChr == topd.chr) {
+                var bstart = (mb.srcMin - bottomd.viewStart) * bottomd.scale;
+                var bend = (mb.srcMax - bottomd.viewStart) * bottomd.scale;
 
-                    if (tend > 0 && tstart < canvas.width && bend > -1000 && bstart < canvas.width + 1000) {
-                        g.beginPath();
-                        g.moveTo(tstart, 0);
-                        g.lineTo(tend, 0);
-                        g.lineTo(bend, 200);
-                        g.lineTo(bstart, 200);
-                        g.lineTo(tstart, 0);
-                        g.fill();
-                    }
-                } 
-            }
+                if ((tend > -1000 && tstart < canvas.width + 1000) || (bend > -1000 && bstart < canvas.width + 1000)) {
+                    g.beginPath();
+                    g.moveTo(tstart, 0);
+                    g.lineTo(tend, 0);
+                    g.lineTo(bend, 200);
+                    g.lineTo(bstart, 200);
+                    g.lineTo(tstart, 0);
+                    g.fill();
+                }
+            } 
         }
-
-
-        {
-            g.fillStyle = 'blue';
-            var mbs = mbsl[1];
-            
-
-            for (var mbi = 0; mbi < mbs.length; ++mbi) {
-                var mb = mbs[mbi];
-
-                if (covered['' + mb.destMin + '_' + mb.destMax])
-                    continue;
-
-                var tstart = (mb.destMin - topd.viewStart) * topd.scale;
-                var tend = (mb.destMax -topd.viewStart) * topd.scale;
-
-                if (mb.srcChr == bottomd.chr) {
-                    var bstart = (mb.srcMin - bottomd.viewStart) * bottomd.scale;
-                    var bend = (mb.srcMax - bottomd.viewStart) * bottomd.scale;
-
-                    if (tend > -1000 && tstart < canvas.width + 1000 && bend > -1000 && bstart < canvas.width + 1000) {
-                        g.beginPath();
-                        g.moveTo(tstart, 0);
-                        g.lineTo(tend, 0);
-                        g.lineTo(bend, 200);
-                        g.lineTo(bstart, 200);
-                        g.lineTo(tstart, 0);
-                        g.fill();
-                    }
-                } 
-            }
-        }
-      });
+    }); 
 }
 
 function syncComparative(topd, bottomd, mappingName) {
