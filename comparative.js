@@ -44,9 +44,7 @@ function refreshComparative(canvas, topd, topMappingName, bottomd, bottomMapping
     Promise.all([_fetchMappingBlocks(topMapping, topd.chr, topd.viewStart|0, topd.viewEnd|0, false),
                  _fetchMappingBlocks(bottomMapping, bottomd.chr, bottomd.viewStart|0, bottomd.viewEnd|0, true)])
       .then(function(mbsl) {
-        console.log(mbsl);
-
-        var w = human.tierHolder.offsetWidth;
+        var w = topd.tierHolder.offsetWidth;
         if (window.devicePixelRatio > 1) {
             canvas.width = w * 2;
             canvas.height = 400;
@@ -66,7 +64,7 @@ function refreshComparative(canvas, topd, topMappingName, bottomd, bottomMapping
 
         var covered = {};
         var mbs = mbsl[0].concat(mbsl[1]);
-        
+
         for (var mbi = 0; mbi < mbs.length; ++mbi) {
             var mb = mbs[mbi];
             var ck = '' + mb.destMin + '_' + mb.destMax;
@@ -93,7 +91,7 @@ function refreshComparative(canvas, topd, topMappingName, bottomd, bottomMapping
                 }
             } 
         }
-    }); 
+    }).catch(function(ex) {console.log(ex)}); 
 }
 
 function syncComparative(topd, bottomd, mappingName) {
